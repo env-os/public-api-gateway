@@ -3,6 +3,7 @@ import { Post, JsonController, Body, Get, Param, Delete, Req, OnUndefined, BadRe
 import { UserService } from '../services/user.service';
 import { UserDTO } from '../dto/user.dto';
 import { LogsUtil } from '../utils/logs.util'
+import { CreateUserDTO } from '../dto/create-user.dto';
 
 @JsonController('/users')
 export class UserController {
@@ -12,7 +13,7 @@ export class UserController {
     
     @Post()
     @OnUndefined(201)
-    public async create(@Body() userDto: UserDTO, @Req() req: Request): Promise<void> {
+    public async create(@Body() userDto: CreateUserDTO, @Req() req: Request): Promise<void> {
         LogsUtil.logRequest(req);
         await this.userService.create(userDto)
         .catch(() => {

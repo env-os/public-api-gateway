@@ -1,6 +1,8 @@
 import { Service } from 'typedi';
+import { v4 as uuid } from 'uuid'
 import axios, { AxiosInstance } from 'axios'
 import { UserDTO } from '../dto/user.dto';
+import { CreateUserDTO } from '../dto/create-user.dto';
 
 @Service()
 export class UserService {
@@ -13,8 +15,14 @@ export class UserService {
         })
     }
 
-    public async create(userDto: UserDTO): Promise<void> {
-        await this.instance.post('/users', userDto)
+    public async create(userDto: CreateUserDTO): Promise<void> {
+        await this.instance.post('/users', {
+            uuid: uuid(),
+            username: userDto.username,
+            fullname: userDto.fullname,
+            email: userDto.email,
+            phone: userDto.phone
+        })
     }
 
     public async delete(uuid: string): Promise<void> {
