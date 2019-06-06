@@ -27,7 +27,7 @@ export class UserController {
         LogsUtil.logRequest(req);
         await this.userService.delete(uuid)
         .catch(() => {
-            throw new HttpError(500);
+            throw new BadRequestError();
         })
     }
 
@@ -37,7 +37,7 @@ export class UserController {
         LogsUtil.logRequest(req);
         return await this.userService.getAll()
         .catch(() => {
-            throw new HttpError(500);
+            throw new NotFoundError();
         })
     }
 
