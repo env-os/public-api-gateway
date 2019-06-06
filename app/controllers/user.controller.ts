@@ -30,6 +30,7 @@ export class UserController {
             throw new HttpError(500);
         })
     }
+
     @Get()
     @OnUndefined(404)
     public async getAll(@Req() req: Request): Promise<UserDTO[]> {
