@@ -2,7 +2,7 @@ import { Service } from 'typedi';
 import { v4 as uuid } from 'uuid'
 import axios, { AxiosInstance } from 'axios'
 import { UserDTO } from '../dto/user.dto';
-import { CreateUserDTO } from '../dto/create-user.dto';
+import { CreateUserDTO } from '../dto/user.dto';
 
 @Service()
 export class UserService {

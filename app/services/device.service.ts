@@ -1,7 +1,7 @@
 import { Service } from 'typedi';
 import { v4 as uuid } from 'uuid'
 import axios, { AxiosInstance } from 'axios';
-import { CreateDeviceDTO } from '../dto/create-device.dto';
+import { CreateDeviceDTO } from '../dto/device.dto';
 import { DeviceDTO } from '../dto/device.dto';
 
 @Service()

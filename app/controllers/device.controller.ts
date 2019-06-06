@@ -2,7 +2,7 @@ import { JsonController, Get, Param, Post, Delete, Body, OnUndefined, Req, BadRe
 import { Request } from 'express'
 import { LogsUtil } from '../utils/logs.util';
 import { DeviceService } from '../services/device.service';
-import { CreateDeviceDTO } from '../dto/create-device.dto';
+import { CreateDeviceDTO } from '../dto/device.dto';
 import { DeviceDTO } from '../dto/device.dto';
 
 @JsonController('/devices')

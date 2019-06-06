@@ -5,3 +5,10 @@ export class DeviceDTO {
     readonly topic!: string;
     readonly description!: string;  
 }
+
+export class CreateDeviceDTO {
+    readonly name!: string;
+    readonly macaddress!: string;
+    readonly topic!: string;
+    readonly description!: string;  
+}

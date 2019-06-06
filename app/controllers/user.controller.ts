@@ -3,7 +3,7 @@ import { Post, JsonController, Body, Get, Param, Delete, Req, OnUndefined, BadRe
 import { UserService } from '../services/user.service';
 import { UserDTO } from '../dto/user.dto';
 import { LogsUtil } from '../utils/logs.util'
-import { CreateUserDTO } from '../dto/create-user.dto';
+import { CreateUserDTO } from '../dto/user.dto';
 
 @JsonController('/users')
 export class UserController {
