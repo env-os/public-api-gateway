@@ -6,6 +6,7 @@ import { UserDTO } from '../dto/user.dto';
 import { DeviceDTO } from '../dto/device.dto';
 import { AreasMicroservice } from '../microservices/areas.microservice';
 import { AreaDTO } from '../dto/area.dto';
+import { CommandDTO } from '../dto/command.dto'
 
 @Service()
 export class EnvOSAggregator {
@@ -71,10 +72,33 @@ export class EnvOSAggregator {
 
     public async getDeviceByUuid(areaUuid: string, uuid: string): Promise<DeviceDTO> {
         let device = await this.devicesMicroservice.getDeviceByUuid(uuid);
+        for(let command of device.commands){
+            const commandFromDeviceMicroService = await this.devicesMicroservice.getCommandByUuid(command.uuid);
+            command = commandFromDeviceMicroService;
+        }
         return device;
     }
 
     public async getDevices(areaUuid: string): Promise<DeviceDTO[]> {
         return await this.areasMicroservice.getDevicesByArea(areaUuid);
+    }
+
+    public async createCommand(deviceUuid: string, commandDTO: CommandDTO): Promise<void> {
+        commandDTO.uuid = uuid();
+        commandDTO.device = await this.devicesMicroservice.getDeviceByUuid(deviceUuid);
+        await this.devicesMicroservice.createCommand(commandDTO);
+    }
+
+    public async deleteCommand(deviceUuid: string, uuid: string): Promise<void> {
+        await this.devicesMicroservice.deleteCommand(uuid);
+    }
+
+    public async getCommandByUuid(deviceUuid: string, uuid: string): Promise<CommandDTO> {
+        let command = await this.devicesMicroservice.getCommandByUuid(uuid);
+        return command;
+    }
+
+    public async getCommandsOfDevice(deviceUuid: string): Promise<CommandDTO[]> {
+        return await this.devicesMicroservice.getCommandsofDevice();
     }
 }
