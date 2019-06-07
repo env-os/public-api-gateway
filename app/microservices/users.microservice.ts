@@ -2,22 +2,21 @@ import { Service } from 'typedi';
 import { v4 as uuid } from 'uuid'
 import axios, { AxiosInstance } from 'axios'
 import { UserDTO } from '../dto/user.dto';
-import { CreateUserDTO } from '../dto/user.dto';
 
 @Service()
-export class UserService {
+export class UsersMicroservice {
     instance: AxiosInstance;
     constructor(){
         this.instance = axios.create({
-            baseURL: process.env.USERS_SERVICE_URL,
+            baseURL: process.env.USERS_MICROSERVICE_URL,
             headers: {'Content-Type': 'application/json'},
             timeout: 3000,
         })
     }
 
-    public async create(userDto: CreateUserDTO): Promise<void> {
+    public async createUser(userDto: UserDTO): Promise<void> {
         await this.instance.post('/users', {
-            uuid: uuid(),
+            uuid: userDto.uuid,
             username: userDto.username,
             fullname: userDto.fullname,
             email: userDto.email,
@@ -25,11 +24,11 @@ export class UserService {
         })
     }
 
-    public async delete(uuid: string): Promise<void> {
+    public async deleteUser(uuid: string): Promise<void> {
         await this.instance.delete(`/users/${uuid}`);
     }
 
-    public async getAll(): Promise<UserDTO[]>{
+    public async getUsers(): Promise<UserDTO[]>{
         return await this.instance.get('/users')
         .then((response) => {
             const users: UserDTO[] = response.data;
@@ -37,7 +36,7 @@ export class UserService {
         })
     }
 
-    public async getOneByUuid(uuid: string): Promise<UserDTO> {
+    public async getUserByUuid(uuid: string): Promise<UserDTO> {
         return await this.instance.get(`/users/${uuid}`)
         .then((response) => {
             const user: UserDTO = response.data;

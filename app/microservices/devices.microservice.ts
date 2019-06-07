@@ -1,23 +1,22 @@
 import { Service } from 'typedi';
 import { v4 as uuid } from 'uuid'
 import axios, { AxiosInstance } from 'axios';
-import { CreateDeviceDTO } from '../dto/device.dto';
 import { DeviceDTO } from '../dto/device.dto';
 
 @Service()
-export class DeviceService {
+export class DevicesMicroservice {
     instance: AxiosInstance;
     constructor(){
         this.instance = axios.create({
-            baseURL: process.env.DEVICES_SERVICE_URL,
+            baseURL: process.env.DEVICES_MICROSERVICE_URL,
             headers: {'Content-Type': 'application/json'},
             timeout: 3000,
         })
     }
 
-    async create(deviceDto: CreateDeviceDTO): Promise<void> {
+    async createDevice(deviceDto: DeviceDTO): Promise<void> {
         await this.instance.post('/devices', {
-            uuid: uuid(),
+            uuid: deviceDto.uuid,
             name: deviceDto.name,
             topic: deviceDto.topic,
             macaddress: deviceDto.macaddress,
@@ -25,11 +24,11 @@ export class DeviceService {
         })
     }
 
-    async delete(uuid: string): Promise<void> {
+    async deleteDevice(uuid: string): Promise<void> {
         await this.instance.delete(`/devices/${uuid}`);
     }
 
-    public async getOneByUuid(uuid: string): Promise<DeviceDTO> {
+    public async getDeviceByUuid(uuid: string): Promise<DeviceDTO> {
         return await this.instance.get(`/devices/${uuid}`)
         .then((response) => {
             const device: DeviceDTO = response.data;
@@ -37,7 +36,7 @@ export class DeviceService {
         })
     }
 
-    public async getAll(): Promise<DeviceDTO[]> {
+    public async getDevices(): Promise<DeviceDTO[]> {
         return await this.instance.get('/devices')
         .then((response) => {
             const devices: DeviceDTO[] = response.data;

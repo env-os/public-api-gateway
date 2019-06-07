@@ -1,14 +1,10 @@
-export class DeviceDTO {
-    readonly uuid!: string;
-    readonly name!: string;
-    readonly macaddress!: string;
-    readonly topic!: string;
-    readonly description!: string;  
-}
+import { AreaDTO } from "./area.dto";
 
-export class CreateDeviceDTO {
-    readonly name!: string;
-    readonly macaddress!: string;
-    readonly topic!: string;
-    readonly description!: string;  
+export class DeviceDTO {
+    uuid!: string;
+    name!: string;
+    macaddress!: string;
+    topic!: string;
+    description!: string;
+    area!: AreaDTO;
 }

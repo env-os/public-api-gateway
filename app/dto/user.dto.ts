@@ -1,14 +1,7 @@
 export class UserDTO {
-    readonly uuid!: string;
-    readonly username!: string;
-    readonly fullname!: string;
-    readonly email!: string;
-    readonly phone!: string;
-}
-
-export class CreateUserDTO {
-    readonly username!: string;
-    readonly fullname!: string;
-    readonly email!: string;
-    readonly phone!: string;
+    uuid!: string;
+    username!: string;
+    fullname!: string;
+    email!: string;
+    phone!: string;
 }
