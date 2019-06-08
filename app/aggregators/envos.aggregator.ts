@@ -79,8 +79,15 @@ export class EnvOSAggregator {
         return device;
     }
 
-    public async getDevices(areaUuid: string): Promise<DeviceDTO[]> {
-        return await this.areasMicroservice.getDevicesByArea(areaUuid);
+    public async getDevicesOfArea(areaUuid: string): Promise<DeviceDTO[]> {
+        let area = await this.areasMicroservice.getAreaByUuid(areaUuid);
+        let devices:DeviceDTO[] = new Array();
+        for(let device of area.devices)
+        {
+            const deviceFromDeviceMicroService = await this.devicesMicroservice.getDeviceByUuid(device.uuid);
+            devices.push(deviceFromDeviceMicroService);
+        }
+        return await devices;
     }
 
     public async createCommand(deviceUuid: string, commandDTO: CommandDTO): Promise<void> {
@@ -99,6 +106,13 @@ export class EnvOSAggregator {
     }
 
     public async getCommandsOfDevice(deviceUuid: string): Promise<CommandDTO[]> {
-        return await this.devicesMicroservice.getCommandsofDevice();
+        let device = await this.devicesMicroservice.getDeviceByUuid(deviceUuid);
+        let commands:CommandDTO[] = new Array();
+        for(let command of device.commands)
+        {
+            const commandFromDeviceMicroService = await this.devicesMicroservice.getCommandByUuid(command.uuid);
+            commands.push(commandFromDeviceMicroService);
+        }
+        return await commands;
     }
 }
