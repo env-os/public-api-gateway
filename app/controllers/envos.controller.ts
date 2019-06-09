@@ -127,7 +127,7 @@ export class EnvOSController {
     @OnUndefined(404)
     public async getDevicesByArea(@Param('areaUuid') areaUuid: string, @Req() req: Request): Promise<DeviceDTO[]> {
         LogsUtil.logRequest(req);
-        return await this.envOSAggregator.getDevices(areaUuid)
+        return await this.envOSAggregator.getDevicesOfArea(areaUuid)
         .catch(() => {
             throw new NotFoundError();
         })
