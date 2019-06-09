@@ -1,6 +1,6 @@
 # Public Api Gateway
 
-Service for data agregation and authentication.
+Service for data aggregation and authentication.
 
 ## Getting Started
 
