@@ -174,4 +174,14 @@ export class EnvOSController {
             throw new NotFoundError();
         })
     }
+
+    @Post('/mqtt')
+    @OnUndefined(201)
+    public async publish(@Body() data: JSON, @Req() req: Request): Promise<void> {
+        LogsUtil.logRequest(req);
+        await this.envOSAggregator.publishMqtt(data)
+        .catch(() => {
+            throw new BadRequestError();
+        })
+    }
 }
