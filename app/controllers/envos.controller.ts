@@ -19,7 +19,7 @@ export class EnvOSController {
         LogsUtil.logRequest(req);
         await this.envOSAggregator.createUser(userDto)
         .catch(() => {
-            throw new BadRequestError();
+            throw new BadRequestError("User not created");
         })
     }
 
@@ -29,7 +29,7 @@ export class EnvOSController {
         LogsUtil.logRequest(req);
         await this.envOSAggregator.deleteUser(uuid)
         .catch(() => {
-            throw new BadRequestError();
+            throw new BadRequestError("User not deleted or not present in the database");
         })
     }
 
@@ -39,7 +39,7 @@ export class EnvOSController {
         LogsUtil.logRequest(req);
         return await this.envOSAggregator.getUsers()
         .catch(() => {
-            throw new NotFoundError();
+            throw new NotFoundError("Users not present in the database");
         })
     }
 
@@ -49,7 +49,7 @@ export class EnvOSController {
         LogsUtil.logRequest(req);
         return await this.envOSAggregator.getUserByUuid(uuid)
         .catch(() => {
-            throw new NotFoundError();
+            throw new NotFoundError("User not present in the database");
         })
     }
 
@@ -59,7 +59,7 @@ export class EnvOSController {
         LogsUtil.logRequest(req);
         await this.envOSAggregator.createArea(areaDTO)
         .catch(() => {
-            throw new BadRequestError();
+            throw new BadRequestError("Area not created");
         })
     }
 
@@ -69,7 +69,7 @@ export class EnvOSController {
         LogsUtil.logRequest(req);
         await this.envOSAggregator.deleteArea(uuid)
         .catch(() => {
-            throw new BadRequestError();
+            throw new BadRequestError("Area not deleted or not present in the database");
         })
     }
 
@@ -79,7 +79,7 @@ export class EnvOSController {
         LogsUtil.logRequest(req);
         return await this.envOSAggregator.getAreas()
         .catch(() => {
-            throw new NotFoundError();
+            throw new NotFoundError("No areas in the database");
         })
     }
 
@@ -89,7 +89,7 @@ export class EnvOSController {
         LogsUtil.logRequest(req);
         return await this.envOSAggregator.getAreaByUuid(uuid)
         .catch(() => {
-            throw new NotFoundError();
+            throw new NotFoundError("Area not present in the database");
         })
     }
 
@@ -99,7 +99,7 @@ export class EnvOSController {
         LogsUtil.logRequest(req);
         await this.envOSAggregator.createDevice(areaUuid, deviceDTO)
         .catch(() => {
-            throw new BadRequestError();
+            throw new BadRequestError("Device not created");
         })
     }
 
@@ -109,7 +109,7 @@ export class EnvOSController {
         LogsUtil.logRequest(req);
         await this.envOSAggregator.deleteDevice(areaUuid, deviceUuid)
         .catch(() => {
-            throw new BadRequestError();
+            throw new BadRequestError("Device not deleted or not present in the database");
         })
     }
 
@@ -119,7 +119,7 @@ export class EnvOSController {
         LogsUtil.logRequest(req);
         return await this.envOSAggregator.getDeviceByUuid(areaUuid, deviceUuid)
         .catch(() => {
-            throw new NotFoundError();
+            throw new NotFoundError("Device not present in the database");
         })
     }
 
@@ -129,7 +129,7 @@ export class EnvOSController {
         LogsUtil.logRequest(req);
         return await this.envOSAggregator.getDevicesOfArea(areaUuid)
         .catch(() => {
-            throw new NotFoundError();
+            throw new NotFoundError("No device in the database");
         })
     }
 
@@ -141,7 +141,7 @@ export class EnvOSController {
         LogsUtil.logRequest(req);
         await this.envOSAggregator.createCommand(deviceUuid, commandDTO)
         .catch(() => {
-            throw new BadRequestError();
+            throw new BadRequestError("Command not created");
         })
     }
 
@@ -151,7 +151,7 @@ export class EnvOSController {
         LogsUtil.logRequest(req);
         await this.envOSAggregator.deleteCommand(deviceUuid, commandUuid)
         .catch(() => {
-            throw new BadRequestError();
+            throw new BadRequestError("Command not deleted or not present in the database");
         })
     }
 
@@ -161,7 +161,7 @@ export class EnvOSController {
         LogsUtil.logRequest(req);
         return await this.envOSAggregator.getCommandByUuid(deviceUuid, commandUuid)
         .catch(() => {
-            throw new NotFoundError();
+            throw new NotFoundError("Command not present in the database");
         })
     }
 
@@ -171,7 +171,7 @@ export class EnvOSController {
         LogsUtil.logRequest(req);
         return await this.envOSAggregator.getCommandsOfDevice(deviceUuid)
         .catch(() => {
-            throw new NotFoundError();
+            throw new NotFoundError("No command in the database");
         })
     }
 
@@ -181,7 +181,7 @@ export class EnvOSController {
         LogsUtil.logRequest(req);
         await this.envOSAggregator.publishMqtt(data)
         .catch(() => {
-            throw new BadRequestError();
+            throw new BadRequestError("Message not sended");
         })
     }
 }
