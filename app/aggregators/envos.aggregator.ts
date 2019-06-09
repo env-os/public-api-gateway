@@ -2,6 +2,7 @@ import { Service } from 'typedi';
 import { v4 as uuid } from 'uuid'
 import { UsersMicroservice } from '../microservices/users.microservice';
 import { DevicesMicroservice } from '../microservices/devices.microservice';
+import { MqttPublisherMicroservice } from '../microservices/mqtt-publisher.microservice';
 import { UserDTO } from '../dto/user.dto';
 import { DeviceDTO } from '../dto/device.dto';
 import { AreasMicroservice } from '../microservices/areas.microservice';
@@ -14,6 +15,7 @@ export class EnvOSAggregator {
         private readonly usersMicroservice: UsersMicroservice,
         private readonly devicesMicroservice: DevicesMicroservice,
         private readonly areasMicroservice: AreasMicroservice,
+        private readonly mqttPublisherMicroservice: MqttPublisherMicroservice,
     ) {}
 
     public async createUser(userDTO: UserDTO): Promise<void> {
@@ -114,5 +116,9 @@ export class EnvOSAggregator {
             commands.push(commandFromDeviceMicroService);
         }
         return await commands;
+    }
+
+    public async publishMqtt(data: any): Promise<void> {
+        await this.mqttPublisherMicroservice.publish(data);
     }
 }
