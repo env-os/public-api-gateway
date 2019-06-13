@@ -1,4 +1,5 @@
 import { AreaDTO } from "./area.dto";
+import { CommandDTO } from "./command.dto";
 
 export class DeviceDTO {
     uuid!: string;
@@ -7,4 +8,5 @@ export class DeviceDTO {
     topic!: string;
     description!: string;
     area!: AreaDTO;
+    commands!: CommandDTO[];
 }

@@ -5,6 +5,7 @@ import { UserDTO } from '../dto/user.dto';
 import { LogsUtil } from '../utils/logs.util';
 import { AreaDTO } from '../dto/area.dto';
 import { DeviceDTO } from '../dto/device.dto';
+import { CommandDTO } from '../dto/command.dto';
 
 @JsonController()
 export class EnvOSController {
@@ -126,9 +127,61 @@ export class EnvOSController {
     @OnUndefined(404)
     public async getDevicesByArea(@Param('areaUuid') areaUuid: string, @Req() req: Request): Promise<DeviceDTO[]> {
         LogsUtil.logRequest(req);
-        return await this.envOSAggregator.getDevices(areaUuid)
+        return await this.envOSAggregator.getDevicesOfArea(areaUuid)
         .catch(() => {
             throw new NotFoundError();
+        })
+    }
+
+
+
+    @Post('/areas/:areaUuid/devices/:deviceUuid/commands')
+    @OnUndefined(201)
+    public async createCommand(@Param('areaUuid') areaUuid: string, @Param('deviceUuid') deviceUuid: string, @Body() commandDTO: CommandDTO, @Req() req: Request): Promise<void> {
+        LogsUtil.logRequest(req);
+        await this.envOSAggregator.createCommand(deviceUuid, commandDTO)
+        .catch(() => {
+            throw new BadRequestError();
+        })
+    }
+
+    @Delete('/areas/:areaUuid/devices/:deviceUuid/commands/:commandUuid')
+    @OnUndefined(201)
+    public async deleteCommand(@Param('areaUuid') areaUuid: string, @Param('deviceUuid') deviceUuid: string, @Param('commandUuid') commandUuid: string, @Req() req: Request): Promise<void> {
+        LogsUtil.logRequest(req);
+        await this.envOSAggregator.deleteCommand(deviceUuid, commandUuid)
+        .catch(() => {
+            throw new BadRequestError();
+        })
+    }
+
+    @Get('/areas/:areaUuid/devices/:deviceUuid/commands/:commandUuid')
+    @OnUndefined(404)
+    public async getCommandByUuid(@Param('areaUuid') areaUuid: string, @Param('deviceUuid') deviceUuid: string, @Param('commandUuid') commandUuid: string, @Req() req: Request): Promise<CommandDTO> {
+        LogsUtil.logRequest(req);
+        return await this.envOSAggregator.getCommandByUuid(deviceUuid, commandUuid)
+        .catch(() => {
+            throw new NotFoundError();
+        })
+    }
+
+    @Get('/areas/:areaUuid/devices/:deviceUuid/commands/')
+    @OnUndefined(404)
+    public async getCommands(@Param('areaUuid') areaUuid: string, @Param('deviceUuid') deviceUuid: string, @Req() req: Request): Promise<CommandDTO[]> {
+        LogsUtil.logRequest(req);
+        return await this.envOSAggregator.getCommandsOfDevice(deviceUuid)
+        .catch(() => {
+            throw new NotFoundError();
+        })
+    }
+
+    @Post('/mqtt')
+    @OnUndefined(201)
+    public async publish(@Body() data: JSON, @Req() req: Request): Promise<void> {
+        LogsUtil.logRequest(req);
+        await this.envOSAggregator.publishMqtt(data)
+        .catch(() => {
+            throw new BadRequestError();
         })
     }
 }

@@ -2,10 +2,12 @@ import { Service } from 'typedi';
 import { v4 as uuid } from 'uuid'
 import { UsersMicroservice } from '../microservices/users.microservice';
 import { DevicesMicroservice } from '../microservices/devices.microservice';
+import { MqttPublisherMicroservice } from '../microservices/mqtt-publisher.microservice';
 import { UserDTO } from '../dto/user.dto';
 import { DeviceDTO } from '../dto/device.dto';
 import { AreasMicroservice } from '../microservices/areas.microservice';
 import { AreaDTO } from '../dto/area.dto';
+import { CommandDTO } from '../dto/command.dto'
 
 @Service()
 export class EnvOSAggregator {
@@ -13,6 +15,7 @@ export class EnvOSAggregator {
         private readonly usersMicroservice: UsersMicroservice,
         private readonly devicesMicroservice: DevicesMicroservice,
         private readonly areasMicroservice: AreasMicroservice,
+        private readonly mqttPublisherMicroservice: MqttPublisherMicroservice,
     ) {}
 
     public async createUser(userDTO: UserDTO): Promise<void> {
@@ -71,10 +74,51 @@ export class EnvOSAggregator {
 
     public async getDeviceByUuid(areaUuid: string, uuid: string): Promise<DeviceDTO> {
         let device = await this.devicesMicroservice.getDeviceByUuid(uuid);
+        for(let command of device.commands){
+            const commandFromDeviceMicroService = await this.devicesMicroservice.getCommandByUuid(command.uuid);
+            command = commandFromDeviceMicroService;
+        }
         return device;
     }
 
-    public async getDevices(areaUuid: string): Promise<DeviceDTO[]> {
-        return await this.areasMicroservice.getDevicesByArea(areaUuid);
+    public async getDevicesOfArea(areaUuid: string): Promise<DeviceDTO[]> {
+        let area = await this.areasMicroservice.getAreaByUuid(areaUuid);
+        let devices:DeviceDTO[] = new Array();
+        for(let device of area.devices)
+        {
+            const deviceFromDeviceMicroService = await this.devicesMicroservice.getDeviceByUuid(device.uuid);
+            devices.push(deviceFromDeviceMicroService);
+        }
+        return await devices;
+    }
+
+    public async createCommand(deviceUuid: string, commandDTO: CommandDTO): Promise<void> {
+        commandDTO.uuid = uuid();
+        commandDTO.device = await this.devicesMicroservice.getDeviceByUuid(deviceUuid);
+        await this.devicesMicroservice.createCommand(commandDTO);
+    }
+
+    public async deleteCommand(deviceUuid: string, uuid: string): Promise<void> {
+        await this.devicesMicroservice.deleteCommand(uuid);
+    }
+
+    public async getCommandByUuid(deviceUuid: string, uuid: string): Promise<CommandDTO> {
+        let command = await this.devicesMicroservice.getCommandByUuid(uuid);
+        return command;
+    }
+
+    public async getCommandsOfDevice(deviceUuid: string): Promise<CommandDTO[]> {
+        let device = await this.devicesMicroservice.getDeviceByUuid(deviceUuid);
+        let commands:CommandDTO[] = new Array();
+        for(let command of device.commands)
+        {
+            const commandFromDeviceMicroService = await this.devicesMicroservice.getCommandByUuid(command.uuid);
+            commands.push(commandFromDeviceMicroService);
+        }
+        return await commands;
+    }
+
+    public async publishMqtt(data: any): Promise<void> {
+        await this.mqttPublisherMicroservice.publish(data);
     }
 }
