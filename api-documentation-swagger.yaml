@@ -1,0 +1,436 @@
+swagger: "2.0"
+info:
+  description: "Microservice che si occupa dell'agregazione dei dati e dell'autenticazione [https://github.com/env-os/public-api-gateway]"
+  version: "1.0.0"
+  title: "public-api-gateway"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "localhost:3000"
+paths:
+  /users:
+    post:
+      summary: "Aggiunge un nuovo utente all'interno del sistema"
+      description: "Questa chiamata POST consente di registrare un nuovo utente all'interno del database."
+      operationId: "create"
+      consumes:
+      - "application/json"
+      parameters: 
+      - in: "body"
+        name: "body"
+        description: "Aggiungere utente all'interno di un database."
+        required: true
+        schema:
+          $ref: '#/definitions/Users'
+      responses:
+        201:
+          description: Created
+        400:
+          description: "L'utente non è stato creato"
+    get:
+      summary: "Ricava le informazioni di tutti gli utenti"
+      description: ""
+      operationId: "getAll"
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/Users'
+        404:
+          description: "All'interno del database non ci sono utenti"
+  
+  /users/{uuid}:
+    get:
+      summary: "Ricava tutte le informazioni dell'utente passando il suo l'uuid"
+      description: ""
+      operationId: "getOneByUuid"
+      parameters: 
+      - name: "uuid"
+        in: "path"
+        description: "uuid dell'utente che si vuole visualizzare"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/Users'
+            
+    delete: 
+      summary: "Elimina un utente dal database passando il suo uuid"
+      description: ""
+      operationId: "delete"
+      parameters: 
+      - name: "uuid"
+        in: "path"
+        description: "l'uuid dell'utente che si vuole eliminare"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: OK
+        404:
+          description: "L'utente inserito non esiste"
+          
+  /areas:
+    post:
+      summary: "Aggiunge un nuova area all'interno del sistema"
+      description: "Questa chiamata POST consente di creare una nuova area all'interno del database."
+      operationId: "createArea"
+      consumes:
+      - "application/json"
+      parameters: 
+      - in: "body"
+        name: "body"
+        description: "Aggiungere area all'interno di un database."
+        required: true
+        schema:
+          $ref: '#/definitions/Areas'
+      responses:
+        201:
+          description: Created
+        400:
+          description: "L'area non è stata creata"
+    get:
+      summary: "Ricava le informazioni di tutte le aree"
+      description: ""
+      operationId: "getAllAreas"
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/Areas'
+        404:
+          description: "All'interno del database non ci sono aree"
+  
+  /areas/{uuidArea}:
+    get:
+      summary: "Ricava tutte le informazioni dell'area passando il suo l'uuid"
+      description: ""
+      operationId: "getAreaByUuid"
+      parameters: 
+      - name: "uuidArea"
+        in: "path"
+        description: "uuid dell'area che si vuole visualizzare"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/Areas'
+            
+    delete: 
+      summary: "Elimina un area dal database passando il suo uuid"
+      description: ""
+      operationId: "deleteArea"
+      parameters: 
+      - name: "uuidArea"
+        in: "path"
+        description: "l'uuid dell'area che si vuole eliminare"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: OK
+        404:
+          description: "L'area inserita non esiste"
+          
+  /area/{uuidArea}/devices:
+    post:
+      summary: "Aggiunge un nuovo dispositivo all'interno dell'area"
+      description: "Questa chiamata POST consente di creare una nuovo dispositivo all'interno di un area."
+      operationId: "createDevice"
+      consumes:
+      - "application/json"
+      parameters:
+      - name: "uuidArea"
+        in: "path"
+        description: "l'uuid dell'area in cui si vuole aggiungere il device"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "Aggiungere dispositivo all'interno di un area."
+        required: true
+        schema:
+          $ref: '#/definitions/Devices'
+      responses:
+        201:
+          description: Created
+        400:
+          description: "Il dispositivo non è stata creato"
+    
+    get:
+      summary: "Ricava le informazioni di tutti i dispositivi dell'area"
+      description: ""
+      operationId: "getAllDeviceOfArea"
+      parameters:
+      - name: "uuidArea"
+        in: "path"
+        description: "l'uuid dell'area"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/Devices'
+        404:
+          description: "All'interno del area non ci sono dispositivi"
+  
+  /area/{uuidArea}/devices/{uuidDevice}:
+    get:
+      summary: "Ricava tutte le informazioni del dispositivo passando il suo l'uuid"
+      description: ""
+      operationId: "getDeviceByUuid"
+      parameters: 
+      - name: "uuidArea"
+        in: "path"
+        description: "l'uuid dell'area"
+        required: true
+        type: "string"
+      - name: "uuidDevice"
+        in: "path"
+        description: "uuid del dispositivo che si vuole visualizzare"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/Devices'
+            
+    delete: 
+      summary: "Elimina un dispositivo dall'area passando il suo uuid"
+      description: ""
+      operationId: "deleteDevice"
+      parameters: 
+      - name: "uuidArea"
+        in: "path"
+        description: "l'uuid dell'area"
+        required: true
+        type: "string"
+      - name: "uuidDevice"
+        in: "path"
+        description: "uuid del dispositivo che si vuole eliminare"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: OK
+        404:
+          description: "Il dispositivo inserito non esiste"
+  /area/{uuidArea}/devices/{uuidDevice}/commands:
+    post:
+      summary: "Aggiunge un nuovo comando all'interno del dispositivo"
+      description: "Questa chiamata POST consente di creare una nuovo comando all'interno del database."
+      operationId: "createCommand"
+      consumes:
+      - "application/json"
+      parameters:
+      - name: "uuidArea"
+        in: "path"
+        description: "l'uuid dell'area"
+        required: true
+        type: "string"
+      - name: "uuidDevice"
+        in: "path"
+        description: "uuid del dispositivo"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "Aggiungere comando all'interno di un database."
+        required: true
+        schema:
+          $ref: '#/definitions/Commands'
+      responses:
+        201:
+          description: Created
+        400:
+          description: "Il comando non è stata creata"
+    get:
+      summary: "Ricava le informazioni di tutti i comandi del dipositivo"
+      description: ""
+      operationId: "getAllCommandsOfDevice"
+      parameters:
+      - name: "uuidArea"
+        in: "path"
+        description: "l'uuid dell'area"
+        required: true
+        type: "string"
+      - name: "uuidDevice"
+        in: "path"
+        description: "uuid del dispositivo"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/Commands'
+        404:
+          description: "All'interno del database non ci sono aree"
+  
+  /area/{uuidArea}/devices/{uuidDevice}/commands/{uuidCommand}:
+    get:
+      summary: "Ricava tutte le informazioni del comando passando il suo l'uuid"
+      description: ""
+      operationId: "getCommandByUuid"
+      parameters:
+      - name: "uuidArea"
+        in: "path"
+        description: "l'uuid dell'area"
+        required: true
+        type: "string"
+      - name: "uuidDevice"
+        in: "path"
+        description: "uuid del dispositivo"
+        required: true
+        type: "string" 
+      - name: "uuidCommand"
+        in: "path"
+        description: "uuid del command che si vuole visualizzare"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/Commands'
+            
+    delete: 
+      summary: "Elimina un comando dal dispositivo passando il suo uuid"
+      description: ""
+      operationId: "deleteCommand"
+      parameters:
+      - name: "uuidArea"
+        in: "path"
+        description: "l'uuid dell'area"
+        required: true
+        type: "string"
+      - name: "uuidDevice"
+        in: "path"
+        description: "uuid del dispositivo"
+        required: true
+        type: "string" 
+      - name: "uuidCommand"
+        in: "path"
+        description: "uuid del command che si vuole eliminare"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: OK
+        404:
+          description: "Il comando inserito non esiste"
+  
+  /mqtt:
+    post:
+      summary: "Pubblica un messaggio nel topic del device relativo al comando inviato"
+      description: "Questa chiamata POST consente di pubblicare un messaggio nel topic del device relativo al comando inviato"
+      operationId: "publish"
+      consumes:
+      - "application/json"
+      parameters: 
+      - in: "body"
+        name: "body"
+        description: "Selezionare topic e messaggio da inviare"
+        required: true
+        schema:
+          $ref: '#/definitions/Mqtt'
+      responses:
+        200:
+          description: OK
+        400:
+          description: "Messaggio non inviato"
+     
+  
+
+definitions:
+  Devices:
+    type: object
+    properties:
+      uuidDevice:
+        type: string
+        format: string
+      name:
+        type: string
+        format: string
+      description:
+        type: string
+        format: string
+      topic:
+        type: string
+        format: string
+      macaddress:
+        type: string
+        format: string
+      commands:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/Commands'
+  
+  Commands:
+    type: object
+    properties:
+      uuidCommand:
+        type: string
+        format: string
+      name:
+        type: string
+        format: string
+      description:
+        type: string
+        format: string
+      device:
+        type: object
+        $ref: '#/definitions/Devices'
+        
+  Areas:
+    type: object
+    properties:
+      uuidArea:
+        type: string
+        format: string
+      name:
+        type: string
+        format: string
+      description:
+        type: string
+        format: string
+      devices:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/Devices'
+          
+  Users:
+    type: object
+    properties:
+      uuidUser:
+        type: string
+        format: string
+      username:
+        type: string
+        format: string
+      email:
+        type: string
+        format: string
+      fullname:
+        type: string
+        format: string
+      phone:
+        type: string
+        format: string
+  
+  Mqtt:
+    type: object
+    properties:
+      topic:
+        type: string
+        format: string
+      data:
+        type: object
