@@ -8,5 +8,7 @@ export class DeviceDTO {
     topic!: string;
     description!: string;
     area!: AreaDTO;
+    valmax!: number;
+    valmin!: number;
     commands!: CommandDTO[];
 }

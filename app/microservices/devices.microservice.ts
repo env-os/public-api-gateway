@@ -9,7 +9,7 @@ export class DevicesMicroservice {
     instance: AxiosInstance;
     constructor(){
         this.instance = axios.create({
-            baseURL: process.env.DEVICES_MICROSERVICE_URL,
+            baseURL: "http://localhost:3001",
             headers: {'Content-Type': 'application/json'},
             timeout: 3000,
         })
@@ -22,6 +22,8 @@ export class DevicesMicroservice {
             topic: deviceDto.topic,
             macaddress: deviceDto.macaddress,
             description: deviceDto.description,
+            valmax: deviceDto.valmax,
+            valmin: deviceDto.valmin,
         })
     }
 
