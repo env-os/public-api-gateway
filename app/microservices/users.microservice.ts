@@ -2,6 +2,7 @@ import { Service } from 'typedi';
 import { v4 as uuid } from 'uuid'
 import axios, { AxiosInstance } from 'axios'
 import { UserDTO } from '../dto/user.dto';
+import { AreaDTO } from '../dto/area.dto'
 
 @Service()
 export class UsersMicroservice {
@@ -41,6 +42,41 @@ export class UsersMicroservice {
         .then((response) => {
             const user: UserDTO = response.data;
             return user;
+        })
+    }
+
+    public async getUserByEmail(email: string): Promise<UserDTO> {
+        return await this.instance.get(`/users/email/${email}`)
+        .then((response) => {
+            const user: UserDTO = response.data;
+            return user;
+        })
+    }
+
+    public async createArea(userUuid: string, areaDTO: AreaDTO): Promise<void> {
+        await this.instance.post('/areas', {
+            uuid: areaDTO.uuid,
+            user: userUuid,
+        })
+    }
+
+    public async deleteArea(areaUuid: string): Promise<void> {
+        await this.instance.delete(`/areas/${areaUuid}`);
+    }
+
+    public async getAreaByUuid(areaUuid: string): Promise<AreaDTO> {
+        return await this.instance.get(`/areas/${areaUuid}`)
+        .then((response) => {
+            const area: AreaDTO = response.data;
+            return area;
+        })
+    }
+
+    public async getAreaByUser(userUuid: string): Promise<AreaDTO[]> {
+        return await this.instance.get('/areas')
+        .then((response) => {
+            const areas: AreaDTO[] = response.data;
+            return areas;
         })
     }
 }

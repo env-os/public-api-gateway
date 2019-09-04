@@ -9,7 +9,7 @@ import { isUndefined } from 'util';
 useContainer(Container);
 
 const app = express();
-const port = process.env.PORT || 3003;
+const port = process.env.PORT || 3004;
 useExpressServer(app, {
   controllers: [EnvOSController],
   authorizationChecker: async(action: Action) => {

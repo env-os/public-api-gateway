@@ -53,58 +53,69 @@ export class EnvOSController {
         LogsUtil.logRequest(req);
         return await this.envOSAggregator.getUserByUuid(uuid)
         .catch(() => {
+            throw new NotFoundError("User not present in the database(Uuid)");
+        })
+    }
+
+    @Authorized()
+    @Get('/users/email/:email')
+    @OnUndefined(404)
+    public async getUserByEmail(@Param('email') email: string, @Req() req: Request): Promise<UserDTO> {
+        LogsUtil.logRequest(req);
+        return await this.envOSAggregator.getUserByEmail(email)
+        .catch(() => {
             throw new NotFoundError("User not present in the database");
         })
     }
 
     @Authorized()
-    @Post('/areas')
+    @Post('/users/:uuid/areas')
     @OnUndefined(201)
-    public async createArea(@Body() areaDTO: AreaDTO, @Req() req: Request): Promise<void> {
+    public async createArea(@Param('uuid') uuid: string, @Body() areaDTO: AreaDTO, @Req() req: Request): Promise<void> {
         LogsUtil.logRequest(req);
-        await this.envOSAggregator.createArea(areaDTO)
+        await this.envOSAggregator.createArea(areaDTO, uuid)
         .catch(() => {
             throw new BadRequestError("Area not created");
         })
     }
 
     @Authorized()
-    @Delete('/areas/:uuid')
+    @Delete('/users/:userUuid/areas/:uuid')
     @OnUndefined(201)
-    public async deleteArea(@Param('uuid') uuid: string, @Req() req: Request): Promise<void> {
+    public async deleteArea(@Param('userUuid') userUuid: string, @Param('uuid') uuid: string, @Req() req: Request): Promise<void> {
         LogsUtil.logRequest(req);
-        await this.envOSAggregator.deleteArea(uuid)
+        await this.envOSAggregator.deleteArea(uuid, userUuid)
         .catch(() => {
             throw new BadRequestError("Area not deleted or not present in the database");
         })
     }
 
     @Authorized()
-    @Get('/areas')
+    @Get('/users/:userUuid/areas')
     @OnUndefined(201)
-    public async getAreas(@Req() req: Request): Promise<AreaDTO[]> {
+    public async getAreas(@Param('userUuid') userUuid: string, @Req() req: Request): Promise<AreaDTO[]> {
         LogsUtil.logRequest(req);
-        return await this.envOSAggregator.getAreas()
+        return await this.envOSAggregator.getAreasOfUser(userUuid)
         .catch(() => {
             throw new NotFoundError("No areas in the database");
         })
     }
 
     @Authorized()
-    @Get('/areas/:uuid')
+    @Get('/users/:userUuid/areas/:uuid')
     @OnUndefined(201)
-    public async getAreaByUuid(@Param('uuid') uuid: string, @Req() req: Request): Promise<AreaDTO> {
+    public async getAreaByUuid(@Param('userUuid') userUuid: string, @Param('uuid') uuid: string, @Req() req: Request): Promise<AreaDTO> {
         LogsUtil.logRequest(req);
-        return await this.envOSAggregator.getAreaByUuid(uuid)
+        return await this.envOSAggregator.getAreaByUuid(userUuid, uuid)
         .catch(() => {
             throw new NotFoundError("Area not present in the database");
         })
     }
 
     @Authorized()
-    @Post('/areas/:areaUuid/devices')
+    @Post('/users/:userUuid/areas/:areaUuid/devices')
     @OnUndefined(201)
-    public async createDevice(@Param('areaUuid') areaUuid: string, @Body() deviceDTO: DeviceDTO, @Req() req: Request): Promise<void> {
+    public async createDevice(@Param('userUuid') userUuid: string, @Param('areaUuid') areaUuid: string, @Body() deviceDTO: DeviceDTO, @Req() req: Request): Promise<void> {
         LogsUtil.logRequest(req);
         await this.envOSAggregator.createDevice(areaUuid, deviceDTO)
         .catch(() => {
@@ -113,9 +124,9 @@ export class EnvOSController {
     }
 
     @Authorized()
-    @Delete('/areas/:areaUuid/devices/:deviceUuid')
+    @Delete('/users/:userUuid/areas/:areaUuid/devices/:deviceUuid')
     @OnUndefined(201)
-    public async deleteDevice(@Param('areaUuid') areaUuid: string, @Param('deviceUuid') deviceUuid: string, @Req() req: Request): Promise<void> {
+    public async deleteDevice(@Param('userUuid') userUuid: string, @Param('areaUuid') areaUuid: string, @Param('deviceUuid') deviceUuid: string, @Req() req: Request): Promise<void> {
         LogsUtil.logRequest(req);
         await this.envOSAggregator.deleteDevice(areaUuid, deviceUuid)
         .catch(() => {
@@ -124,9 +135,9 @@ export class EnvOSController {
     }
 
     @Authorized()
-    @Get('/areas/:areaUuid/devices/:deviceUuid')
+    @Get('/users/:userUuid/areas/:areaUuid/devices/:deviceUuid')
     @OnUndefined(404)
-    public async getDeviceByUuid(@Param('areaUuid') areaUuid: string, @Param('deviceUuid') deviceUuid: string, @Req() req: Request): Promise<DeviceDTO> {
+    public async getDeviceByUuid(@Param('userUuid') userUuid: string, @Param('areaUuid') areaUuid: string, @Param('deviceUuid') deviceUuid: string, @Req() req: Request): Promise<DeviceDTO> {
         LogsUtil.logRequest(req);
         return await this.envOSAggregator.getDeviceByUuid(areaUuid, deviceUuid)
         .catch(() => {
@@ -135,9 +146,9 @@ export class EnvOSController {
     }
 
     @Authorized()
-    @Get('/areas/:areaUuid/devices')
+    @Get('/users/:userUuid/areas/:areaUuid/devices')
     @OnUndefined(404)
-    public async getDevicesByArea(@Param('areaUuid') areaUuid: string, @Req() req: Request): Promise<DeviceDTO[]> {
+    public async getDevicesByArea(@Param('userUuid') userUuid: string, @Param('areaUuid') areaUuid: string, @Req() req: Request): Promise<DeviceDTO[]> {
         LogsUtil.logRequest(req);
         return await this.envOSAggregator.getDevicesOfArea(areaUuid)
         .catch(() => {
