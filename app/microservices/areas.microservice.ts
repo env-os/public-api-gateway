@@ -8,7 +8,7 @@ export class AreasMicroservice {
     instance: AxiosInstance;
     constructor(){
         this.instance = axios.create({
-            baseURL: process.env.AREAS_MICROSERVICE_URL,
+            baseURL: "http://localhost:3002",
             headers: {'Content-Type': 'application/json'},
             timeout: 3000,
         })

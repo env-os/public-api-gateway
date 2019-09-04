@@ -19,36 +19,55 @@ export class EnvOSAggregator {
     ) {}
 
     public async createUser(userDTO: UserDTO): Promise<void> {
-        userDTO.uuid = uuid();
         await this.usersMicroservice.createUser(userDTO);
     }
 
     public async deleteUser(uuid: string): Promise<void> {
+        const userAreas = await this.usersMicroservice.getAreaByUser(uuid);
+        for(let area of userAreas){
+            await this.areasMicroservice.deleteArea(area.uuid);
+        }
         await this.usersMicroservice.deleteUser(uuid);
     }
 
     public async getUserByUuid(uuid: string): Promise<UserDTO> {
-        return await this.usersMicroservice.getUserByUuid(uuid);
+        let user = await this.usersMicroservice.getUserByUuid(uuid);
+        for(let area of user.areas){
+            const areaFromAreasMicroService = await this.areasMicroservice.getAreaByUuid(area.uuid);
+            area = areaFromAreasMicroService;
+        }
+        return user;
+    }
+
+    public async getUserByEmail(email: string): Promise<UserDTO> {
+        let user = await this.usersMicroservice.getUserByEmail(email);
+        for(let area of user.areas){
+            const areaFromAreasMicroService = await this.areasMicroservice.getAreaByUuid(area.uuid);
+            area = areaFromAreasMicroService;
+        }
+        return user;
     }
 
     public async getUsers(): Promise<UserDTO[]> {
         return await this.usersMicroservice.getUsers();
     }
 
-    public async createArea(areaDTO: AreaDTO): Promise<void> {
+    public async createArea(areaDTO: AreaDTO, userUuid: string): Promise<void> {
         areaDTO.uuid = uuid();
         await this.areasMicroservice.createArea(areaDTO);
+        await this.usersMicroservice.createArea(userUuid, areaDTO);
     }
 
-    public async deleteArea(uuid: string): Promise<void> {
+    public async deleteArea(uuid: string, userUuid: string): Promise<void> {
         const areaDevices = await this.areasMicroservice.getDevicesByArea(uuid);
         for(let device of areaDevices){
             await this.devicesMicroservice.deleteDevice(device.uuid);
         }
         await this.areasMicroservice.deleteArea(uuid);
+        await this.usersMicroservice.deleteArea(uuid)
     }
 
-    public async getAreaByUuid(uuid: string): Promise<AreaDTO> {
+    public async getAreaByUuid(userUuid: string, uuid: string): Promise<AreaDTO> {
         let area = await this.areasMicroservice.getAreaByUuid(uuid);
         for(let device of area.devices){
             const deviceFromDeviceMicroService = await this.devicesMicroservice.getDeviceByUuid(device.uuid);
@@ -57,8 +76,15 @@ export class EnvOSAggregator {
         return area;
     }
 
-    public async getAreas(): Promise<AreaDTO[]> {
-        return await this.areasMicroservice.getAreas();
+    public async getAreasOfUser(userUuid: string): Promise<AreaDTO[]> {
+        let user = await this.usersMicroservice.getUserByUuid(userUuid);
+        let areas:AreaDTO[] = new Array();
+        for(let area of user.areas)
+        {
+            const areaFromAreasMicroService = await this.areasMicroservice.getAreaByUuid(area.uuid);
+            areas.push(areaFromAreasMicroService);
+        }
+        return await areas;
     }
 
     public async createDevice(areaUuid: string, deviceDTO: DeviceDTO): Promise<void> {
