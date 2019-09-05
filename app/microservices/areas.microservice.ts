@@ -60,12 +60,4 @@ export class AreasMicroservice {
             return device;
         })
     }
-
-    public async getDevicesByArea(areaUuid: string): Promise<DeviceDTO[]> {
-        return await this.instance.get('/devices')
-        .then((response) => {
-            const devices: DeviceDTO[] = response.data;
-            return devices;
-        })
-    }
 }

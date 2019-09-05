@@ -23,8 +23,8 @@ export class EnvOSAggregator {
     }
 
     public async deleteUser(uuid: string): Promise<void> {
-        const userAreas = await this.usersMicroservice.getAreaByUser(uuid);
-        for(let area of userAreas){
+        const userAreas = await this.usersMicroservice.getUserByUuid(uuid);
+        for(let area of userAreas.areas){
             await this.areasMicroservice.deleteArea(area.uuid);
         }
         await this.usersMicroservice.deleteUser(uuid);
@@ -59,8 +59,8 @@ export class EnvOSAggregator {
     }
 
     public async deleteArea(uuid: string, userUuid: string): Promise<void> {
-        const areaDevices = await this.areasMicroservice.getDevicesByArea(uuid);
-        for(let device of areaDevices){
+        const areaDevices = await this.areasMicroservice.getAreaByUuid(uuid);
+        for(let device of areaDevices.devices){
             await this.devicesMicroservice.deleteDevice(device.uuid);
         }
         await this.areasMicroservice.deleteArea(uuid);
