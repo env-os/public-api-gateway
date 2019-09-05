@@ -71,12 +71,4 @@ export class UsersMicroservice {
             return area;
         })
     }
-
-    public async getAreaByUser(userUuid: string): Promise<AreaDTO[]> {
-        return await this.instance.get('/areas')
-        .then((response) => {
-            const areas: AreaDTO[] = response.data;
-            return areas;
-        })
-    }
 }
